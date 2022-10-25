@@ -14,6 +14,7 @@ class TSP(Problem):
         cost = 0
         for i in range(1, len(solution)):
             cost += self.distance_matrix[solution[i-1]][solution[i]]
+        cost += self.distance_matrix[solution[-1]][solution[0]]
         return cost
 
     def get_initial_solution(self):

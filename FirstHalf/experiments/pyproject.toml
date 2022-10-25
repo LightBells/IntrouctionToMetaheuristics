@@ -11,6 +11,7 @@ pandas = "^1.5.1"
 scipy = "^1.9.3"
 simanneal = "^0.5.0"
 matplotlib = "^3.6.1"
+memory-profiler = "^0.60.0"
 
 [tool.poetry.dev-dependencies]
 

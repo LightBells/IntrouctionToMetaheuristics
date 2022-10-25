@@ -12,6 +12,8 @@ from typing import (
     )
 import sys
 from tsp_by_ils import TSP, TSP_ILS
+import time
+from memory_profiler import profile
 
 
 def download_file(url: str, path: Path) -> Optional[Path]:
@@ -60,17 +62,30 @@ def main() -> None:
     tsp = TSP(distance_matrix)
 
     # Initialize the solver
-    solver = TSP_ILS(tsp, max_iterations=3000, max_no_improvement=100)
+    solver = TSP_ILS(tsp, max_iterations=10000, max_no_improvement=300)
 
     best_cost = 1e10
     worst_cost = 0
+    avg_cost = 0
+
+    avg_time = 0
+
     best_tour: List[int] = []
     worst_tour: List[int] = []
 
+    # @profile
+    def solve():
+        return solver.search(tsp.get_initial_solution())
+
     for i in range(10):
         # Solve the problem
-        tour = solver.search(tsp.get_initial_solution())
+        start = time.time()
+        tour = solve()
+        end = time.time()
+
         cost = tsp.cost(tour)
+        avg_cost += cost
+        avg_time += end - start
 
         if cost < best_cost:
             best_cost = cost
@@ -86,9 +101,13 @@ def main() -> None:
 
     # Print the best tour and its cost
     print('Best tour: {}'.format([*map(lambda x:towns[x], best_tour)]))
-    print('Best cost: {}'.format(tsp.cost(best_tour)))
     print('Worst tour: {}'.format([*map(lambda x:towns[x], worst_tour)]))
+
+    print('Best cost: {}'.format(tsp.cost(best_tour)))
     print('Worst cost: {}'.format(tsp.cost(worst_tour)))
+
+    print('Average cost: {}'.format(avg_cost/10))
+    print('Average time: {}s'.format(avg_time/10))
 
 
 if __name__ == '__main__':
