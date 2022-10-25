@@ -235,7 +235,7 @@ if __name__ == "__main__":
     start = time.time()
     best_route , routes = tsp.tabu_search(s_init)     # tabu search
     end = time.time()
-
+https://cocoatomo.gihub.io/poetry-ja/t
     print('best route : ' , best_route)
     print('best best_distance : ' , tsp.get_route_distance(best_route))
     print('the time cost : ',end - start )
