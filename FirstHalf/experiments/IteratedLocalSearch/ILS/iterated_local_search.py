@@ -1,4 +1,5 @@
 import abc
+import copy
 
 
 class IteratedLocalSearch(object, metaclass=abc.ABCMeta):
@@ -13,7 +14,7 @@ class IteratedLocalSearch(object, metaclass=abc.ABCMeta):
         no_improvement = 0
 
         for i in range(self.max_iterations):
-            seed_solution = best
+            seed_solution = copy.deepcopy(best)
             kicked_solution = self.perturbation(seed_solution)
             candidate = self.local_search(kicked_solution)
             candidate_cost = self.problem.cost(candidate)
