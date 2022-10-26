@@ -1,6 +1,8 @@
 # アニーリング
 from simanneal import Annealer
 import urllib.request
+import time
+import psutil
 url = 'https://raw.githubusercontent.com/maskot1977/ipython_notebook/master/toydata/location.txt'
 urllib.request.urlretrieve(url, 'location.txt') # データのダウンロード
 
@@ -37,6 +39,9 @@ class TravellingSalesmanProblem(Annealer):
         e = 0
         for i in range(len(self.state)):
             e += self.distance_matrix[self.state[i-1]][self.state[i]]
+
+
+        e += self.distance_matrix[self.state[len(self.state)-1]][self.state[0]]
         return e
 
 import numpy as np
@@ -64,43 +69,76 @@ import random
 init_state = list(japan['Town'])
 random.shuffle(init_state)
 
-tsp = TravellingSalesmanProblem(init_state, distance_matrix)
+avg = 0
+avg_memory = 0
+avg_time = 0
 
-tsp.set_schedule(tsp.auto(minutes=0.2))
-tsp.copy_strategy = "slice"
-state, e = tsp.anneal()
+max = 100000
+min = 0
 
-print(e)
-print(state)
+for t in range(10):
+
+    tsp = TravellingSalesmanProblem(init_state, distance_matrix)
+
+    b1 = psutil.virtual_memory()
+    start = time.time()
+    tsp.set_schedule(tsp.auto(minutes=0.2))
+    tsp.copy_strategy = "slice"
+    state, e = tsp.anneal()
+    end = time.time()
+    b2 = psutil.virtual_memory()
 
 
-while state[0] != 'Sapporo':
-        state = state[1:] + state[:1]  # rotate NYC to start
+    # print(e)
+    # print(state)
+
+
+    # while state[0] != 'Sapporo':
+            # state = state[1:] + state[:1]  # rotate NYC to start
+
+    # print()
+    # print()
+    # print("distance : ",e)
+    # print('the time cost : ',end - start )
+    # print("memory used : ",abs((b1.used - b2.used)/1000/1000)," GB")
+    # print()
+
+    avg += e
+    avg_time += end - start
+    avg_memory += abs((b1.used - b2.used)/1000/1000)
+
+    if e < max:
+        max = e
+        import matplotlib.pyplot as plt
+
+        fig = plt.figure(figsize=(10, 10))
+        Xs = []
+        Ys = []
+        for i in range(len(state)):
+            Xs.append(list(japan[japan['Town'] == state[i]].iloc[:, 2])[0])
+            Ys.append(list(japan[japan['Town'] == state[i]].iloc[:, 1])[0])
+
+        plt.plot(Xs, Ys)
+        for city, x, y in zip(japan['Town'], japan['Latitude'], japan['Longitude']):
+            plt.text(x, y, city, alpha=0.5, size=12)
+        plt.grid()
+        # plt.show()
+        fig.savefig("tsp_annerling.png")
+    if e > min:
+        min = e
+
+    # print(state)
+
+    # print(list(japan[japan['Town'] == state[5]].iloc[:, 0])[0])
+    # print()
+    # print(list( distance_matrix.keys())[5] )
 
 print()
-print(e)
-print(state)
-
-
-
-import matplotlib.pyplot as plt
-
-fig = plt.figure(figsize=(10, 10))
-Xs = []
-Ys = []
-for i in range(len(state)):
-    Xs.append(list(japan[japan['Town'] == state[i]].iloc[:, 2])[0])
-    Ys.append(list(japan[japan['Town'] == state[i]].iloc[:, 1])[0])
-
-plt.plot(Xs, Ys)
-for city, x, y in zip(japan['Town'], japan['Latitude'], japan['Longitude']):
-    plt.text(x, y, city, alpha=0.5, size=12)
-plt.grid()
-plt.show()
-fig.savefig("tsp_annerling.png")
-
-
-
-print(list(japan[japan['Town'] == state[5]].iloc[:, 0])[0])
+print("avg distance : ",avg/10)
+print('avg the time cost : ',avg_time/10 )
+print("memory used : ",avg_memory/10," MB")
 print()
-# print(list( distance_matrix.keys())[5] )
+
+print("max distance : ", max)
+print("min distance : ",min)
+print()

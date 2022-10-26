@@ -1,7 +1,10 @@
 # タブーサーチ
 from itertools import combinations
 import os,sys,copy
+from tkinter import BaseWidget
+import psutil
 import numpy as np
+import random 
 import time
 import matplotlib.pyplot as plt
 from tqdm import tqdm
@@ -27,11 +30,12 @@ for i, town in enumerate(japan['Town']):
         distance_matrix[town] = {}
     for j, town2 in enumerate(japan['Town']):
         distance_matrix[town][town2] = dist_mat[i][j]
-    # print(distance_matrix)
+
+# print(distance_matrix)
 
 
 class Tabu():
-    def __init__(self,disMatrix,max_iters=50,maxTabuSize=10):
+    def __init__(self,disMatrix,max_iters=100,maxTabuSize=50):
         """parameters definition"""
         self.disMatrix = disMatrix
         self.maxTabuSize = maxTabuSize
@@ -44,12 +48,20 @@ class Tabu():
         parameters: route : list
         return : total distance : folat
         '''        
-        routes = [0] + route + [0]    # add the start and end point 
+        # routes = [0] + route + [0]    # add the start and end point 
         total_distance = 0
-        for i,n in enumerate(routes):
-            if i != 0 :
-                total_distance = total_distance +  self.disMatrix[last_pos][n] 
-            last_pos = n
+        # for i,n in enumerate(routes):
+            # if i != 0 :
+                # total_distance = total_distance +  self.disMatrix[last_pos][n] 
+            # last_pos = n
+
+        for i in range(len(route)):
+            total_distance += self.disMatrix[route[i-1]][route[i]]
+
+
+        total_distance += self.disMatrix[route[len(route)-1]][route[0]]
+
+        # total_distance += self.disMatrix[last_pos][0] 
         return total_distance
 
     def exchange(self,s1,s2,arr):
@@ -67,7 +79,7 @@ class Tabu():
         current_list[index1], current_list[index2]= arr[index2] , arr[index1]
         return current_list
 
-    def generate_initial_solution(self,num=10,mode='greedy'):
+    def generate_initial_solution(self,num=46,mode='greedy'):
         """
         function to get the initial solution,there two different way to generate route_init.
         Args: 
@@ -90,12 +102,18 @@ class Tabu():
                 route_init.append(best_candidate)
                 # route_init.append( list( distance_matrix.keys())[best_candidate] ) 
                 
-            route_init.remove(0)
+            x = random.randint(0,46)
+            for index,row in japan.iterrows():
+                if index == x:
+                    # print("start point ",row[0])
+                    break
+            
+            # route_init.remove(x)
                             
         if mode == 'random':
-            route_init = np.arange(1,num+1)  #init solution from 1 to num
+            route_init = np.arange(0,num+1)  #init solution from 1 to num
             np.random.shuffle(route_init)  #shuffle the list randomly
-
+        
         return list(route_init)
 
     def tabu_search(self,s_init):   
@@ -224,46 +242,111 @@ class GetData():
 
 if __name__ == "__main__":
 
-    tsp = Tabu(disMatrix=dist_mat ,max_iters=20,maxTabuSize=10) 
 
-	# two different way to generate initial solution
-	# num : the number of points   
-    s_init = tsp.generate_initial_solution(num=customerNum,mode='greedy') # mode = "greedy"  or "random"
-    print('init route : ' , s_init)
-    print('init distance : ' , tsp.get_route_distance(s_init))
+    avg = 0
+    avg_memory = 0
+    avg_time = 0
 
-    start = time.time()
-    best_route , routes = tsp.tabu_search(s_init)     # tabu search
-    end = time.time()
-https://cocoatomo.gihub.io/poetry-ja/t
-    print('best route : ' , best_route)
-    print('best best_distance : ' , tsp.get_route_distance(best_route))
-    print('the time cost : ',end - start )
+    max = 100000
+    min = 0
 
-    # plot the result changes with iterations
-    results=[]
-    for i in routes:
-        results.append(tsp.get_route_distance(i))    
-    # plt.plot(np.arange(len(results)) , results)
-    # plt.show()
-    
-    import matplotlib.pyplot as plt
+    for t in range(10):
 
-    fig = plt.figure(figsize=(10, 10))
-    Xs = []
-    Ys = []
-    for i in range(len(best_route)):
-        # Xs.append(list(japan[japan['Town'] == best_route[i]].iloc[:, 2])[0])
-        # Xs.append( list( distance_matrix.keys())[i] ) 
-        # Xs.append(list(japan[i].iloc[:, 2])[0])
-        Xs.append(list(japan[japan['Town'] == list( distance_matrix.keys())[i]].iloc[:, 2])[0])
-        # Ys.append(list(japan[japan['Town'] == best_route[i]].iloc[:, 1])[0])
-        # Ys.append(list(japan[i].iloc[:, 1])[0])
-        Ys.append(list(japan[japan['Town'] == list( distance_matrix.keys())[i]].iloc[:, 1])[0])
+        print(t)
 
-    plt.plot(Xs, Ys)
-    for city, x, y in zip(japan['Town'], japan['Latitude'], japan['Longitude']):
-        plt.text(x, y, city, alpha=0.5, size=12)
-    plt.grid()
-    plt.show()
-    fig.savefig("tsp_tabusearch.png")
+
+        tsp = Tabu(disMatrix=dist_mat ,max_iters=3000,maxTabuSize=300) 
+
+	    # two different way to generate initial solution
+	    # num : the number of points   
+        # s_init = tsp.generate_initial_solution(num=customerNum,mode='greedy') # mode = "greedy"  or "random"
+        s_init = tsp.generate_initial_solution(num=customerNum,mode='random') # mode = "greedy"  or "random"
+        # print('init route : ' , s_init)
+        # print(len(s_init))
+        # print('init distance : ' , tsp.get_route_distance(s_init))
+
+        b1 = psutil.virtual_memory()
+        start = time.time()
+        best_route , routes = tsp.tabu_search(s_init)     # tabu search
+        # for i in range(10):
+            # best_route , routes = tsp.tabu_search(best_route)
+        end = time.time()
+        b2 = psutil.virtual_memory()
+        e = tsp.get_route_distance(best_route)
+
+
+        # print('best route : ' , best_route)
+        # print('best best_distance : ' , tsp.get_route_distance(best_route))
+        # print('the time cost : ',end - start )
+
+
+        # while best_route[0] != 20:
+         # best_route = best_route[1:] + best_route[:1]  # rotate NYC to start
+
+
+        # print()
+        # print('best best_distance : ' , e)
+        # print('the time cost : ',end - start )
+        # print("memory used : ",abs((b1.used - b2.used)/1000/1000)," GB")
+        # print()
+
+
+        avg += e
+        avg_time += end - start
+        avg_memory += abs((b1.used - b2.used)/1000/1000)
+
+        if e < max:
+            max = e
+
+            for i in range(len(best_route)):
+                for index,row in japan.iterrows():
+                    if index == best_route[i]:
+                        # print(row[0])
+                        best_route[i] = row[0]
+                        break
+
+            import matplotlib.pyplot as plt
+
+            fig = plt.figure(figsize=(10, 10))
+            Xs = []
+            Ys = []
+            for i in range(len(best_route)):
+                Xs.append(list(japan[japan['Town'] == best_route[i]].iloc[:, 2])[0])
+                Ys.append(list(japan[japan['Town'] == best_route[i]].iloc[:, 1])[0])
+
+            plt.plot(Xs, Ys)
+            for city, x, y in zip(japan['Town'], japan['Latitude'], japan['Longitude']):
+                plt.text(x, y, city, alpha=0.5, size=12)
+            plt.grid()
+            # plt.show()
+            fig.savefig("tsp_annerling.png")
+        if e > min:
+            min = e
+
+
+
+        # plot the result changes with iterations
+        #results=[]
+        #for i in routes:
+            # results.append(tsp.get_route_distance(i))    
+        # plt.plot(np.arange(len(results)) , results)
+        # plt.show()
+
+
+        # print()
+        # print()
+        # for index,row in japan.iterrows():
+            # if index == 33:
+                # print(index)
+
+        # print(best_route)
+
+print()
+print("avg distance : ",avg/10)
+print('avg the time cost : ',avg_time/10 )
+print("memory used : ",avg_memory/10," MB")
+print()
+
+print("max distance : ", max)
+print("min distance : ",min)
+print()
