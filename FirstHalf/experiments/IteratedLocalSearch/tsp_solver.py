@@ -1,3 +1,6 @@
+# Title: Traveling Salesman Problem Solver using Iterated Local Search
+# Author: Hikaru Takahashi
+# Date: 2022/10/26
 import urllib.request
 import pandas as pd
 import numpy as np
