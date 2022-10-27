@@ -13,7 +13,7 @@
 ## SimulatedAnnealing
   `cd SimulatedAnnealing`
   for TSP
-  `annealing.py`
+  `python annealing.py`
   for KP
   `python knapsack_annealing.py`
   
@@ -24,9 +24,9 @@
 ## IteratedLocalSearch
   `cd IteratedLocalSearch`
   for TSP
-  `tsp_solver.py` 
+  `python tsp_solver.py` 
   for KP
-  `knapsack_solver.py`
+  `python knapsack_solver.py`
   
 ## GuidedLocalSearch
   `cd GuidedLocalSearch`
