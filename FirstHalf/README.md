@@ -2,33 +2,36 @@
 1. Please install [poetry](https://cocoatomo.github.io/poetry-ja/) to manage packages.
 1. Run `poetry install` to install dependencies.
 1. Run `poetry shell`, then you will enter to virtual environment.
+1. Move into `experiments` directory with `cd experiments` command.
 
 *Following steps should be executed in virtual environment*
 
 # How to run each program
 ## Tabu Search
-  `cd TabuSearch`
-  `python tabusearch.py`
+  1. Move into TabuSearch directory with command `cd TabuSearch`.
+  1. Execute tabu search with command `python tabusearch.py`.
   
 ## SimulatedAnnealing
-  `cd SimulatedAnnealing`
+  1. Move into SimulatedAnnealing directory with command `cd SimulatedAnnealing`.
+  1. Execute tabu search with command
   for TSP
-  `annealing.py`
+  `python annealing.py`
   for KP
   `python knapsack_annealing.py`
   
 ## 2-opt
-  `cd 2opt`
-  `python opt2.py`
+  1. Move into 2opt directory with command `cd 2opt`.
+  1. Execute opt2 algorihm with command`python opt2.py`.
   
 ## IteratedLocalSearch
-  `cd IteratedLocalSearch`
+  1. Move into IteratedLocalSearch directory with command `cd IteratedLocalSearch`
+  1. Execute opt2 algorihm with command
   for TSP
-  `tsp_solver.py` 
+  `python tsp_solver.py` 
   for KP
-  `knapsack_solver.py`
+  `python knapsack_solver.py`
   
 ## GuidedLocalSearch
-  `cd GuidedLocalSearch`
-  `python tsp_solver.py`
+  1. Move into GuidedLocalSearch directory with command `cd GuidedLocalSearch`
+  1. Execute Guided Local Search algorihm with command `python tsp_solver.py`.
 
