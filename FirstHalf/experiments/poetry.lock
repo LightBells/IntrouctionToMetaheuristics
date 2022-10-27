@@ -113,7 +113,10 @@ optional = false
 python-versions = ">=3.8"
 
 [package.dependencies]
-numpy = {version = ">=1.21.0", markers = "python_version >= \"3.10\""}
+numpy = [
+    {version = ">=1.21.0", markers = "python_version >= \"3.10\""},
+    {version = ">=1.20.3", markers = "python_version < \"3.10\""},
+]
 python-dateutil = ">=2.8.1"
 pytz = ">=2020.1"
 
@@ -240,8 +243,8 @@ python-versions = ">=3.7"
 
 [metadata]
 lock-version = "1.1"
-python-versions = "^3.10"
-content-hash = "6bd1762707068c8e7a8e2865d096fa7a7ec621d2998b961bc0c79c3730cc3f70"
+python-versions = "^3.8"
+content-hash = "7e56507c3631fe993ab5fbd1e8fdac729fa7b86e82811cbb5835f2875f307e0d"
 
 [metadata.files]
 contourpy = [
