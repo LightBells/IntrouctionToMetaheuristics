@@ -13,7 +13,7 @@
   
 ## SimulatedAnnealing
   1. Move into SimulatedAnnealing directory with command `cd SimulatedAnnealing`.
-  1. Execute tabu search with command
+  1. Execute simulated annealing with command
   for TSP
   `python annealing.py`
   for KP
