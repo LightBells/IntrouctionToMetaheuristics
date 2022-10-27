@@ -29,6 +29,6 @@
   `knapsack_solver.py`
   
 ## GuidedLocalSearch
-  `GuidedLocalSearch`
+  `cd GuidedLocalSearch`
   `python tsp_solver.py`
 
