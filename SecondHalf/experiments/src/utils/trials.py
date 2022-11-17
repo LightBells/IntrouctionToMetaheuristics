@@ -1,0 +1,142 @@
+from typing import Dict
+from algorithms import GeneticAlgorithm
+from algorithms import DifferentialEvolution
+from algorithms import ParticleSwarmOptimization
+from functions.meta_informations import meta_informations
+import utils.functools as ft
+
+def trials(iteratations: int, configurations: Dict)->Dict:
+    log = [];
+
+    # Genetic Algorithm
+    for i in range(iteratations):
+        print(f"Running Genetic Algorithm {i+1}/{iteratations}")
+        print("=========================================")
+        for population in configurations["genetic_algorithm"]["canditate_populations"]:
+            print("Population Size: {}".format(population))
+            for cp in configurations["genetic_algorithm"]["canditate_crossover_rates"]:
+                print("Crossover Probability: {}".format(cp))
+                for mp in configurations["genetic_algorithm"]["canditate_mutation_rates"]:
+                    print("Mutation Probability: {}".format(mp))
+                    ga = GeneticAlgorithm(
+                        generations=configurations["genetic_algorithm"]["generations"],
+                        population_size=population,
+                        crossover_probability=cp,
+                        mutation_probability=mp,
+                    )
+                    
+                    for meta_information in meta_informations:
+                        obj_fn = ft.get_partial_obj_fn(meta_information);
+
+                        print(f"Running {meta_information['name']}...")
+                        best_solution, value = ga.solve(
+                            obj_fn=obj_fn,
+                            n=meta_information["dimension"],
+                            lb=meta_information["lower_bound"],
+                            ub=meta_information["upper_bound"],
+                            sigma=0.1,
+                            seed=configurations["seed"],
+                        )
+
+                        print("The best solution is: ", best_solution)
+                        print("The value of the best solution is: ", value[0])
+                        print("The optimal solution is: ", meta_information["optimal_solution"])
+                        print("The optimal value is: ", meta_information["optimal_value"])
+                        
+                        log.append({
+                            "algorithm": "genetic",
+                            "trial": i,
+                            "function": meta_information["name"],
+                            "population": population,
+                            "crossover_probability": cp,
+                            "mutation_probability": mp,
+                            "best_solution": best_solution,
+                            "value": value[0],
+                        })
+
+    # Differential Evolution
+    for i in range(iteratations):
+        print(f"Running Differential Evolution {i+1}/{iteratations}")
+        print("=========================================")
+        for population in configurations["differential_evolution"]["canditate_populations"]:
+            for mutation in configurations["differential_evolution"]["canditate_mutation_rates"]:
+                for recombination in configurations["differential_evolution"]["canditate_recombination_rates"]:
+                    differential_evolution = DifferentialEvolution(
+                        maxiter=configurations["differential_evolution"]["maxiter"],
+                        popsize=population,
+                        mutation=mutation,
+                        recombination=recombination,
+                        workers=4,
+                    )
+
+                    for meta_information in meta_informations:
+                        print(f"Running {meta_information['name']} with Differential Evolution")
+                        obj_fn = ft.get_partial_obj_fn(meta_information)
+                        best_solution, value = differential_evolution.solve(
+                            obj_fn = obj_fn,
+                            n = meta_information["dimension"],
+                            lb = meta_information["lower_bound"],
+                            ub = meta_information["upper_bound"],
+                            seed = configurations["seed"],
+                            verbose = False,
+                        )
+                        print("The best solution is: ", best_solution)
+                        print("The value of the best solution is: ", value)
+                        print("The optimal solution is: ", meta_information["optimal_solution"])
+                        print("The optimal value is: ", meta_information["optimal_value"])
+                        log.append({
+                            "algorithm": "differential_evolution",
+                            "function": meta_information["name"],
+                            "population": population,
+                            "mutation_probability": mutation,
+                            "recombination": recombination,
+                            "best_solution": best_solution,
+                            "value": value,
+                        })
+
+
+    # Particle Swarm Optimization
+    for i in range(iteratations):
+        print(f"Running Particle Swarm Optimization {i+1}/{iteratations}")
+        print("=========================================")
+        for population in configurations["particle_swarm_optimization"]["canditate_populations"]:
+            for c1 in configurations["particle_swarm_optimization"]["canditate_c1"]:
+                for c2 in configurations["particle_swarm_optimization"]["canditate_c2"]:
+                    for w in configurations["particle_swarm_optimization"]["canditate_w"]:
+                        particle_swarm_optimization = ParticleSwarmOptimization(
+                            maxiter=configurations["particle_swarm_optimization"]["maxiter"],
+                            num_particles=population,
+                            c1=c1,
+                            c2=c2,
+                            w=w
+                        )
+
+                        for meta_information in meta_informations:
+                            print(f"Running {meta_information['name']} with Particle Swarm Optimization")
+                            obj_fn = ft.get_partial_obj_fn(meta_information)
+                            best_solution, value = particle_swarm_optimization.solve(
+                                obj_fn = obj_fn,
+                                n = meta_information["dimension"],
+                                lb = meta_information["lower_bound"],
+                                ub = meta_information["upper_bound"],
+                                seed = configurations["seed"],
+                                verbose = False,
+                            )
+                            print("The best solution is: ", best_solution)
+                            print("The value of the best solution is: ", value)
+                            print("The optimal solution is: ", meta_information["optimal_solution"])
+                            print("The optimal value is: ", meta_information["optimal_value"])
+                            log.append({
+                                "algorithm": "particle_swarm_optimization",
+                                "function": meta_information["name"],
+                                "population": population,
+                                "c1": c1,
+                                "c2": c2,
+                                "w": w,
+                                "best_solution": best_solution,
+                                "value": value,
+                            })
+
+
+    return log
+
