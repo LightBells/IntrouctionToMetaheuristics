@@ -8,18 +8,18 @@ def main() -> None:
     configurations = {
        "differential_evolution": {
            "maxiter": 1000,
-           "canditate_populations": [10, 20, 50, 100, 200, 500],
-           "canditate_recombination_rates": [0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95],
-           "canditate_mutation_rates": [0.001, 0.02, 0.04, 0.08, 0.10, 0.20],
+           "canditate_populations": [10, 50, 100, 200, 500],
+           "canditate_recombination_rates": [0.6, 0.7, 0.8, 0.9],
+           "canditate_mutation_rates": [0.01, 0.02, 0.04, 0.10],
        },
        "genetic_algorithm": {
            "generations": 100,
-           "canditate_populations": [10, 20, 50, 100, 200, 500],
-           "canditate_crossover_rates": [0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95],
-           "canditate_mutation_rates": [0.001, 0.02, 0.04, 0.08, 0.10, 0.20],
+           "canditate_populations": [10, 50, 100, 200, 500],
+           "canditate_crossover_rates":  [0.6, 0.7, 0.8, 0.9],
+           "canditate_mutation_rates": [0.01, 0.02, 0.04, 0.10],
        },
        "particle_swarm_optimization": {
-               "canditate_populations": [10, 20, 50, 100, 200, 500],
+               "canditate_populations": [10, 50, 100, 200, 500],
                "canditate_c1": [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
                "canditate_c2": [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
                "canditate_w": [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
