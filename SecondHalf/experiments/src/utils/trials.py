@@ -4,6 +4,7 @@ from algorithms import DifferentialEvolution
 from algorithms import ParticleSwarmOptimization
 from functions.meta_informations import meta_informations
 import utils.functools as ft
+import time
 
 def trials(configurations: Dict)->Dict:
     log = [];
