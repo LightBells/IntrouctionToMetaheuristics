@@ -7,9 +7,9 @@ def foxholes(x, a):
     x_i in x: SHOULD be in [-65.536, 65.536].
     '''
     value = 0.002
-    for j in range(len(x)):
+    for j in range(25):
         temp = j + 1
-        for i in range(1, 2):
-            temp += (x[j] - a[i][j])**6
+        for i in range(2):
+            temp += (x[i] - a[i][j])**6
         value += 1/temp
-    return [value]
+    return [1/value]

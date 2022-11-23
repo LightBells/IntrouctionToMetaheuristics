@@ -8,5 +8,5 @@ def step(x):
     '''
     value = 0
     for i in range(len(x)):
-        value += int(x[i] > 0)
+        value += int(x[i])
     return [value]

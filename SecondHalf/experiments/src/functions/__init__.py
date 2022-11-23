@@ -6,3 +6,4 @@ from functions.foxholes import foxholes
 from functions.schwefel import schwefel
 from functions.rastrigin import rastrigin
 from functions.griewangk import griewangk
+from functions.meta_informations import meta_informations
