@@ -26,5 +26,5 @@ if __name__ == "__main__":
         ax = fig.add_subplot(111, projection='3d')
         surf = ax.plot_surface(X, Y, Z, cmap=matplotlib.cm.coolwarm, linewidth=0, antialiased=False)
         fig.colorbar(surf, shrink=0.5, aspect=5)
-        plt.savefig("figures/" + metadatum["name"] + ".png")
+        plt.savefig("../figures/" + metadatum["name"] + ".png")
 
